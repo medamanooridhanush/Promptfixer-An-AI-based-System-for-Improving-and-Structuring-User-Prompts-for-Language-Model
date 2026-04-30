@@ -1,4 +1,4 @@
-# 🚀 PromptFixer Pro | Enterprise AI Engine
+# 🚀 PromptFixer  |  AI Engine
 
 A high-performance Prompt Engineering system powered by Google Gemma (via Ollama) and Scikit-Learn.
 Designed for automated prompt structuring, toxicity filtering, and real-time research metrics.
