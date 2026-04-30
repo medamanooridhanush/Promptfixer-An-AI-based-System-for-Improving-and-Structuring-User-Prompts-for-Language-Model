@@ -1,0 +1,67 @@
+{
+    "accuracy": 100.0,
+    "precision": 100.0,
+    "recall": 100.0,
+    "f1_score": 100.0,
+    "precision_macro": 100.0,
+    "recall_macro": 100.0,
+    "f1_score_macro": 100.0,
+    "split_ratio": "80% Train / 20% Test",
+    "dataset_size": 5021,
+    "algorithm": "TF-IDF + RandomForestClassifier",
+    "confusion_matrix": [
+        [
+            32,
+            0,
+            0
+        ],
+        [
+            0,
+            487,
+            0
+        ],
+        [
+            0,
+            0,
+            486
+        ]
+    ],
+    "class_labels": [
+        "label",
+        "safe",
+        "toxic"
+    ],
+    "classification_report": {
+        "label": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 32.0
+        },
+        "safe": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 487.0
+        },
+        "toxic": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 486.0
+        },
+        "accuracy": 1.0,
+        "macro avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 1005.0
+        },
+        "weighted avg": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 1005.0
+        }
+    }
+}

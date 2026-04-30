@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROMPT FIXER</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #08111f;
+            --bg-accent: #0f1e31;
+            --card-bg: rgba(11, 17, 30, 0.82);
+            --card-border: rgba(148, 163, 184, 0.14);
+            --primary-glow: #37d7ff;
+            --secondary-glow: #f0b35a;
+            --text-main: #f8fafc;
+            --text-muted: #cbd5e1;
+            --text-soft: #93a4bb;
+            --panel-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            background:
+                radial-gradient(circle at top left, rgba(55, 215, 255, 0.14), transparent 30%),
+                radial-gradient(circle at 85% 15%, rgba(240, 179, 90, 0.10), transparent 24%),
+                radial-gradient(circle at 50% 100%, rgba(55, 215, 255, 0.08), transparent 28%),
+                linear-gradient(180deg, #07101d 0%, #091423 48%, #07101b 100%);
+            color: var(--text-main);
+            font-family: 'Inter', system-ui, sans-serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 42px 42px;
+            mask-image: linear-gradient(180deg, rgba(0,0,0,0.35), transparent 85%);
+            opacity: 0.18;
+        }
+        .main-container { max-width: 1180px; margin-top: 42px; margin-bottom: 52px; }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: var(--panel-shadow);
+            padding: 28px;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+        .glass-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(55, 215, 255, 0.22);
+            box-shadow: 0 28px 90px rgba(0, 0, 0, 0.42);
+        }
+        
+        .title-glow {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: -0.04em;
+            text-shadow: 0 0 22px rgba(55, 215, 255, 0.18);
+            margin-bottom: 10px;
+        }
+        .hero-panel {
+            position: relative;
+            overflow: hidden;
+            padding: 26px 28px;
+            margin-bottom: 26px;
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)),
+                linear-gradient(135deg, rgba(55, 215, 255, 0.08), rgba(240, 179, 90, 0.05));
+        }
+        .hero-panel::after {
+            content: "";
+            position: absolute;
+            inset: auto -12% -52% auto;
+            width: 280px;
+            height: 280px;
+            background: radial-gradient(circle, rgba(55, 215, 255, 0.18), transparent 68%);
+            pointer-events: none;
+        }
+        .nav-pills .nav-link {
+            color: var(--text-soft);
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            border-radius: 999px;
+            margin: 0 6px;
+            padding: 0.85rem 1.1rem;
+            transition: 0.25s ease;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .nav-pills .nav-link:hover { color: var(--text-main); border-color: rgba(55,215,255,0.22); }
+        .nav-pills .nav-link.active { 
+            background: linear-gradient(135deg, #37d7ff 0%, #2f6fff 100%); 
+            color: #04111d; 
+            box-shadow: 0 10px 30px rgba(55, 215, 255, 0.24); 
+            border-color: transparent;
+        }
+
+        label, .form-label, .nav-link, .badge, .btn, .eval-title, .spec-key, .text-muted, .text-white-50 {
+            text-shadow: none;
+        }
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        .text-white-50 {
+            color: rgba(248, 250, 252, 0.72) !important;
+        }
+        .text-info {
+            color: #6fe7ff !important;
+        }
+
+        textarea {
+            background: rgba(8, 16, 29, 0.88) !important;
+            border: 1px solid rgba(55, 215, 255, 0.18) !important;
+            color: #f8fafc !important;
+            border-radius: 16px !important;
+            box-shadow: inset 0 2px 14px rgba(0,0,0,0.45);
+            resize: none;
+            padding: 18px !important;
+            font-size: 1.02rem;
+        }
+        textarea::placeholder {
+            color: #8fa3c2 !important;
+            opacity: 1;
+        }
+        textarea:focus { border-color: #37d7ff !important; box-shadow: 0 0 0 4px rgba(55, 215, 255, 0.12) !important; }
+
+        .btn-neon {
+            background: linear-gradient(90deg, #37d7ff, #2f6fff);
+            border: none;
+            color: #03111d;
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            border-radius: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            transition: transform 0.2s, box-shadow 0.2s, filter 0.2s;
+        }
+        .btn-neon:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(55, 215, 255, 0.28);
+            filter: brightness(1.04);
+        }
+
+        #resOptimized {
+            background: rgba(8, 16, 29, 0.95);
+            border: 1px solid rgba(55, 215, 255, 0.16);
+            border-left: 4px solid #37d7ff;
+            border-radius: 16px;
+            padding: 20px 22px;
+            color: #f8fafc;
+        }
+        #resOptimized strong { color: #37d7ff; font-size: 1.05rem; letter-spacing: 0.04em; }
+
+        .eval-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-top: 20px; }
+        .eval-box {
+            background: rgba(255, 255, 255, 0.035);
+            border: 1px solid rgba(255, 255, 255, 0.09);
+            border-radius: 16px;
+            padding: 15px;
+            text-align: center;
+            transition: 0.3s;
+        }
+        .eval-box:hover { border-color: #37d7ff; transform: translateY(-5px); background: rgba(55, 215, 255, 0.06); }
+        .eval-title { color: var(--text-soft); font-size: 0.78rem; text-transform: uppercase; letter-spacing: 1px; }
+        .eval-value { color: #ffffff; font-size: 1.6rem; font-weight: 800; text-shadow: 0 0 10px rgba(255,255,255,0.12); margin-top: 5px; }
+
+        /* Loader */
+        .pulse-loader {
+            width: 50px; height: 50px; border-radius: 50%;
+            background: #37d7ff; box-shadow: 0 0 20px #37d7ff;
+            animation: pulse 1.5s infinite;
+            margin: 0 auto;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        .dash-card { border-radius: 18px; border: 1px solid rgba(255,255,255,0.06); padding: 25px; color: white; box-shadow: 0 16px 30px rgba(0,0,0,0.25); }
+        .bg-total { background: linear-gradient(135deg, #111b2e, #1d2b45); }
+        .bg-blocked { background: linear-gradient(135deg, #c2415a, #7f1d1d); }
+        .bg-latency { background: linear-gradient(135deg, #1ca7d8, #2563eb); }
+
+        .spec-row { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1); padding: 10px 0; }
+        .spec-key { color: #6fe7ff; font-weight: 700; text-transform: capitalize; }
+        
+        /* History Blocks */
+        .history-original {
+            background: rgba(239, 68, 68, 0.06); border: 1px solid rgba(239, 68, 68, 0.2); 
+            border-radius: 14px; padding: 15px; color: #fecaca; font-family: monospace; white-space: pre-wrap;
+        }
+        .history-optimized {
+            background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); 
+            border-radius: 14px; padding: 15px; color: #a7f3d0;
+        }
+        .history-optimized strong { color: #34d399; }
+        .section-heading {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: #f8fafc;
+        }
+        .section-subtle {
+            color: var(--text-soft);
+        }
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 10px;
+        }
+        .hero-title {
+            font-family: 'Space Grotesk', 'Inter', sans-serif;
+            font-weight: 700;
+            color: #f8fafc;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+        .hero-subtitle {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            line-height: 1.45;
+            letter-spacing: 0.02em;
+            max-width: 720px;
+            margin: 0 auto;
+        }
+        .tab-shell {
+            margin-top: 24px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container main-container">
+    <div class="hero-panel glass-card text-center">
+        <h1 class="hero-title display-4">PROMPT FIXER</h1>
+        <p class="hero-subtitle mb-0">An AI-based System for<br>Improving and Structuring User Prompts for<br>Language Model</p>
+    </div>
+
+    <!-- TABS -->
+    <ul class="nav nav-pills justify-content-center mb-4 tab-shell" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="pills-fixer-tab" data-bs-toggle="pill" data-bs-target="#pills-fixer">⚡ Core Processor</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-dashboard-tab" data-bs-toggle="pill" data-bs-target="#pills-dashboard" onclick="loadDashboard()">📊 Insights</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="pills-history-tab" data-bs-toggle="pill" data-bs-target="#pills-history" onclick="loadHistory()">📜 Transform History</button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="pills-tabContent">
+        
+        <!-- FIXER TAB -->
+        <div class="tab-pane fade show active" id="pills-fixer">
+            <div class="glass-card mx-auto">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+                    <label class="fw-bold mb-0 section-heading" style="color: #6fe7ff; letter-spacing: 0.14em; text-transform: uppercase;">Input Data Stream</label>
+                    <span class="section-subtle small">Paste a prompt and generate a clearer version.</span>
+                </div>
+                <textarea id="promptInput" class="form-control mb-4" rows="5" placeholder="Inject raw structural prompt here..."></textarea>
+                
+                <button class="btn btn-neon w-100 py-3 fs-5" onclick="processPrompt()">Optimize the Prompt</button>
+                
+                <div id="loader" class="text-center mt-5 d-none">
+                    <div class="pulse-loader"></div>
+                    <p class="mt-4 text-info fw-bold" style="letter-spacing: 2px;">OPTIMIZING THE PROMPT...</p>
+                </div>
+
+                <div id="resultArea" class="mt-5 d-none">
+                    <div id="alertBox" class="alert d-none shadow-sm fw-bold"></div>
+                    
+                    <div id="successContent" class="d-none">
+                        <div class="d-flex justify-content-between mb-4">
+                            <span class="badge" style="background: rgba(0, 229, 255, 0.2); border: 1px solid #00e5ff; color: #00e5ff; font-size: 1rem; padding: 8px 15px;">
+                                🧠 Intent Signature: <span id="resIntent" class="fw-bold text-white"></span>
+                            </span>
+                        </div>
+                        
+                        <div class="output-header">
+                            <label class="fw-bold mb-0 section-heading">Optimized Output</label>
+                            <button id="copyOutputBtn" class="btn btn-sm btn-outline-info fw-bold" type="button" onclick="copyOptimizedPrompt()">Copy</button>
+                        </div>
+                        <div id="resOptimized" class="mb-5 shadow"></div>
+                        
+                        <h5 class="fw-bold section-heading mb-3" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Deep Evaluation Metrics</h5>
+                        <div class="eval-grid">
+                            <div class="eval-box"><div class="eval-title">Semantic Sim</div><div class="eval-value" id="m_sem_sim">--</div></div>
+                            <div class="eval-box"><div class="eval-title">BLEU Score</div><div class="eval-value" id="m_bleu">--</div></div>
+                            <div class="eval-box"><div class="eval-title">BERT Score</div><div class="eval-value" id="m_bert">--</div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD TAB -->
+        <div class="tab-pane fade" id="pills-dashboard">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <div class="dash-card bg-total text-center">
+                        <h6 class="text-uppercase text-muted fw-bold">Compute Cycles</h6>
+                        <h1 class="display-4 fw-bold" id="dashTotal">0</h1>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="dash-card bg-blocked text-center">
+                        <h6 class="text-uppercase fw-bold text-white-50">Firewall Blocks</h6>
+                        <h1 class="display-4 fw-bold" id="dashBlocked">0</h1>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <div class="dash-card bg-latency text-center">
+                        <h6 class="text-uppercase fw-bold text-white-50">Avg Latency</h6>
+                        <h2><span id="dashLatency" class="display-4 fw-bold">0</span> ms</h2>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="glass-card">
+                        <h5 class="fw-bold mb-4 section-heading">Intent Topography</h5>
+                        <canvas id="intentChart" height="100"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTORY TAB -->
+        <div class="tab-pane fade" id="pills-history">
+            <div class="glass-card">
+                <h4 class="fw-bold section-heading mb-4 border-bottom pb-3" style="border-color: rgba(255,255,255,0.1)!important;">
+                    📜 Transformation Logs
+                </h4>
+                <div id="historyContainer">
+                    <div class="text-center text-info"><div class="spinner-border spinner-border-sm"></div> Fetching historical data...</div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    Chart.defaults.color = '#94a3b8';
+    let intentChartInstance = null;
+    let latestOptimizedPrompt = "";
+
+    async function processPrompt() {
+        const prompt = document.getElementById("promptInput").value;
+        if(!prompt.trim()) return;
+
+        document.getElementById("loader").classList.remove("d-none");
+        document.getElementById("resultArea").classList.add("d-none");
+        document.getElementById("alertBox").classList.add("d-none");
+        document.getElementById("successContent").classList.add("d-none");
+
+        try {
+            const res = await fetch('/api/process', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ prompt })
+            });
+            const data = await res.json();
+
+            document.getElementById("loader").classList.add("d-none");
+            document.getElementById("resultArea").classList.remove("d-none");
+
+            const alertBox = document.getElementById("alertBox");
+            const successContent = document.getElementById("successContent");
+
+            if(data.status === "rejected") {
+                alertBox.className = "alert alert-danger d-block border-0 bg-danger text-white";
+                alertBox.innerHTML = `🛡️ ${data.message}`;
+            } else {
+                successContent.classList.remove("d-none");
+                document.getElementById("resIntent").innerText = data.intent;
+                latestOptimizedPrompt = data.optimized_prompt || "";
+                document.getElementById("resOptimized").innerHTML = marked.parse(latestOptimizedPrompt);
+                
+                document.getElementById("m_sem_sim").innerText = data.metrics.semantic_similarity;
+                document.getElementById("m_bleu").innerText = data.metrics.bleu_score;
+                document.getElementById("m_bert").innerText = data.metrics.bert_score;
+            }
+        } catch (error) {
+            document.getElementById("loader").classList.add("d-none");
+            alert("Backend communication failure.");
+        }
+    }
+
+    async function copyOptimizedPrompt() {
+        const text = latestOptimizedPrompt.trim();
+        if (!text) {
+            alert("No optimized output to copy yet.");
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(text);
+            const button = document.getElementById("copyOutputBtn");
+            const previousLabel = button.innerText;
+            button.innerText = "Copied";
+            button.classList.add("btn-success");
+            button.classList.remove("btn-outline-info");
+            setTimeout(() => {
+                button.innerText = previousLabel;
+                button.classList.remove("btn-success");
+                button.classList.add("btn-outline-info");
+            }, 1200);
+        } catch (error) {
+            alert("Copy failed.");
+        }
+    }
+
+    async function loadDashboard() {
+        try {
+            const res = await fetch('/api/dashboard-metrics');
+            const data = await res.json();
+
+            document.getElementById("dashTotal").innerText = data.total || 0;
+            document.getElementById("dashBlocked").innerText = data.blocked || 0;
+            document.getElementById("dashLatency").innerText = data.avg_latency || 0;
+
+            const ctx = document.getElementById('intentChart').getContext('2d');
+            if(intentChartInstance) intentChartInstance.destroy(); 
+            
+            intentChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.intents || [],
+                    datasets: [{
+                        label: 'Frequency',
+                        data: data.intent_counts || [],
+                        backgroundColor: '#00e5ff',
+                        borderRadius: 8
+                    }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { grid: { color: 'rgba(255,255,255,0.05)' } }, x: { grid: { display: false } } } }
+            });
+        } catch (e) { console.error(e); }
+    }
+
+    async function loadHistory() {
+        const container = document.getElementById("historyContainer");
+        container.innerHTML = '<div class="text-center text-info"><div class="spinner-border spinner-border-sm"></div> Fetching historical data...</div>';
+        
+        try {
+            const res = await fetch('/api/history');
+            const data = await res.json();
+            
+            if (data.error) {
+                container.innerHTML = `<div class="text-danger text-center fw-bold">⚠️ ${data.error}</div>`;
+                return;
+            }
+            if (data.length === 0) {
+                container.innerHTML = `<div class="text-muted text-center py-5">No transformation history found yet. Process a prompt first!</div>`;
+                return;
+            }
+
+            let html = "";
+            data.forEach(item => {
+                // Ensure variables are strictly strings to prevent marked() from throwing errors
+                const rawText = item.original_prompt ? String(item.original_prompt) : "⚠️ No raw input recorded (Old log entry).";
+                const optText = item.optimized_prompt ? String(item.optimized_prompt) : "⚠️ No optimized output recorded (Old log entry).";
+
+                html += `
+                <div class="p-4 mb-4" style="background: rgba(0,0,0,0.3); border-radius: 16px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="d-flex justify-content-between align-items-center mb-3 border-bottom pb-2" style="border-color: rgba(255,255,255,0.1)!important;">
+                        <span class="badge" style="background: rgba(255,255,255,0.1); color: #ccc;">🕒 ${item.timestamp}</span>
+                        <span class="badge" style="background: rgba(0, 229, 255, 0.2); color: #00e5ff; border: 1px solid #00e5ff;">🧠 ${item.intent || 'Unknown'}</span>
+                    </div>
+                    <div class="row">
+                        <!-- Before Container -->
+                        <div class="col-md-5 mb-3 mb-md-0">
+                            <label class="fw-bold mb-2 text-danger" style="letter-spacing: 1px; font-size: 0.85rem;">🔴 RAW INPUT</label>
+                            <div class="history-original shadow-sm">${rawText}</div>
+                        </div>
+                        <!-- Arrow indicator for desktop -->
+                        <div class="col-md-2 d-flex align-items-center justify-content-center text-muted fs-3">
+                            ➡️
+                        </div>
+                        <!-- After Container -->
+                        <div class="col-md-5">
+                            <label class="fw-bold mb-2 text-success" style="letter-spacing: 1px; font-size: 0.85rem;">🟢 SYNTHESIZED OUTPUT</label>
+                            <div class="history-optimized shadow-sm">${marked.parse(optText)}</div>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        } catch (e) {
+            container.innerHTML = "<div class='text-danger text-center'>Failed to load history data. Check console.</div>";
+            console.error(e);
+        }
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,10 @@
+{
+    "accuracy": 25.0,
+    "precision": 13.89,
+    "recall": 25.0,
+    "f1_score": 16.67,
+    "split_ratio": "76.0% Train / 24.0% Test",
+    "dataset_size": 50,
+    "num_classes": 12,
+    "algorithm": "Hybrid TF-IDF (word+char) + Logistic Regression"
+}

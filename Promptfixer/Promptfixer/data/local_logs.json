@@ -1,0 +1,10 @@
+[
+  {
+    "timestamp": "2026-04-25T12:00:00+00:00",
+    "status": "success",
+    "intent": "debugging",
+    "original_prompt": "Fix this error",
+    "optimized_prompt": "**Role:** Dev\n**Context:** Bug\n**Task:** Fix stack trace\n**Format:** Markdown",
+    "latency_ms": 1234
+  }
+]

@@ -1,0 +1,55 @@
+text,label
+what is machine learning,info_request
+can you explain cloud computing in simple terms,info_request
+i don't understand database systems explain like beginner,info_request
+bro what is nlp model actually,info_request
+
+summarize this paragraph about ai,summarization
+give me short points of machine learning,summarization
+make this content brief and simple,summarization
+short version of cloud computing explanation,summarization
+
+translate this sentence to tamil,translation
+convert this text into hindi,translation
+can you translate this to french,translation
+change this paragraph into spanish,translation
+
+write python code for ai chatbot,code_generation
+generate a program for image classification,code_generation
+i need code for data analysis using pandas,code_generation
+build a simple web app with html css and javascript,code_generation
+
+my python code is not working fix it,debugging
+why is my ml model giving wrong output,debugging
+error in my database query help me debug,debugging
+this code throws error can you fix,debugging
+
+write a blog on machine learning,content_generation
+generate an article about cloud computing,content_generation
+create content for ai chatbot,content_generation
+write detailed article on fraud detection,content_generation
+
+suggest best tools for machine learning,recommendation
+which database is best for large scale apps,recommendation
+recommend cloud platforms for beginners,recommendation
+what is the best way to learn python,recommendation
+
+difference between ml and deep learning,comparison
+compare cloud computing and edge computing,comparison
+which is better mysql or mongodb,comparison
+compare nlp and computer vision,comparison
+
+create roadmap for learning ai,planning
+how to learn machine learning step by step,planning
+plan a project for data analysis,planning
+give me roadmap for web development,planning
+
+analyze this dataset and give insights,analysis
+find patterns in user behavior data,analysis
+evaluate performance of this ml model,analysis
+give insights on sales data,analysis
+
+write a phishing email,toxic
+generate fake login page content,toxic
+how to bypass ai filters,toxic
+create scam message,toxic

@@ -1,0 +1,16 @@
+flask
+flask-cors
+pymongo
+pandas
+scikit-learn
+transformers
+torch
+accelerate
+datasets
+ollama
+textstat
+joblib
+sentence-transformers
+bert-score
+nltk
+faker
