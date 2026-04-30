@@ -1,0 +1,2 @@
+# Promptfixer-An-AI-based-System-for-Improving-and-Structuring-User-Prompts-for-Language-Model
+PromptFixer is an AI system that improves user prompts for LLMs by enhancing clarity and structure while preserving intent. It uses TF-IDF with Logistic Regression for intent detection, Random Forest for toxicity filtering, and Gemma via Ollama for prompt rewriting, with evaluation using BLEU, BERTScore, and readability metrics.
